@@ -1,72 +1,167 @@
 # Personal Website
 
-Personal website for igorputina.com built with **Strapi** and **React.js** (all in **TypeScript**).  
-Designed to run in **Docker containers**.
+Personal website for igorputina.com built with **Strapi** and **Next.js** (all in **TypeScript**).
+Designed to run in **Docker containers** with simple **Make** commands.
 
 ## Tech Stack
 
-- **Frontend**: React.js + TypeScript  
-- **Backend / CMS**: Strapi (TypeScript)  
-- **Deployment**: Dockerized
+- **Frontend**: Next.js 15.5.3 + TypeScript + Turbopack
+- **Backend / CMS**: Strapi 5.23.4 + TypeScript
+- **Database**: SQLite (development-friendly, production-ready)
+- **Deployment**: Dockerized with nginx optimization
+- **Process Management**: Make + Docker Compose
 
 ## Quick Start
 
 ```bash
-# Production mode (runs in background)
-npm start
+# Initial setup (run once)
+make setup
 
 # Development mode (with hot reload)
-npm run dev
+make dev
+
+# Production mode (optimized builds)
+make prod
 
 # Stop all services
-npm stop
+make stop
 
 # Clean everything (containers, volumes, images)
-npm run clean
+make clean
 ```
 
-**Important**: Run `npm run clean` when switching between development and production modes to avoid conflicts.
+**Important**: Run `make clean` when switching between development and production modes to avoid conflicts.
 
 ## Available Commands
 
-- **`npm start`** - Start production containers in background
-- **`npm run dev`** - Start development containers with hot reload
-- **`npm stop`** - Stop all containers (both dev and production)
-- **`npm run clean`** - Remove all containers, volumes, and images
+Run `make help` to see all available commands:
+
+- **`make setup`** - Initial project setup (creates .env and data directory)
+- **`make dev`** - Start development environment with hot reload
+- **`make prod`** - Start production environment with optimized builds
+- **`make stop`** - Stop all containers (both dev and prod)
+- **`make clean`** - Remove all containers, volumes, and images
+- **`make logs`** - Show logs from all running containers
+- **`make logs-dev`** - Show logs from development containers only
+- **`make logs-prod`** - Show logs from production containers only
+- **`make build`** - Build all Docker images without starting
+- **`make status`** - Show status of all containers
 
 ## Services
 
-### Strapi (Backend)
+### Strapi Backend (CMS)
 - **Port**: 1337 (configurable via `STRAPI_PORT` in `.env`)
-- **Database**: SQLite (persisted in `./data` directory)
+- **Database**: SQLite (persisted in `./data/` directory)
 - **Admin Panel**: http://localhost:1337/admin
 - **API**: http://localhost:1337/api
 
-### React Site (Frontend)
-- **Port**: 3000 (configurable via `SITE_PORT` in `.env`)
+### Next.js Frontend
+- **Development Port**: 3000 (configurable via `SITE_PORT` in `.env`)
+- **Production**: Served through nginx with optimizations
 - **URL**: http://localhost:3000
 
-### Data Persistence
-- **SQLite database**: Stored in `./data/` directory
-- **File uploads**: Stored in `./uploads/` directory
+### Production Optimizations
+- **nginx**: Static file caching, gzip compression, security headers
+- **Next.js**: Standalone output for minimal container size
+- **Multi-stage builds**: Optimized Docker images for production
+
+## Configuration
 
 ### Environment Variables
 
-All environment variables are managed from the **root `.env`** file:
+All configuration is managed from the **root `.env`** file:
 
 ```bash
 # Create your .env from the example
 cp .env.example .env
 ```
 
-This replaces the need for separate `.env` files in `/strapi` directory.
+Key variables to configure:
+- **`STRAPI_PORT`** - Strapi backend port (default: 1337)
+- **`SITE_PORT`** - Frontend port (default: 3000)
+- **`NEXT_PUBLIC_STRAPI_URL`** - Strapi API URL for frontend
+- **Strapi Security Keys** - Generate secure keys for production
 
-### For Production
-- Generate new security keys
-- Update `REACT_APP_STRAPI_URL` to your production domain
+### Data Persistence
+- **SQLite database**: Automatically stored in `./data/` directory
+- **File uploads**: Will be stored in `./uploads/` directory (auto-created)
+- **Volume mounts**: Development mode mounts source code for hot reload
 
-## Development Notes
+## Development vs Production
 
-- Development mode mounts source code for hot reload
-- SQLite database is suitable for development and small production deployments
-- The React app proxies API calls to Strapi through nginx in production
+### Development Mode (`make dev`)
+- **Hot reload**: Source code changes trigger automatic rebuilds
+- **Volume mounts**: Code changes reflect immediately in containers
+- **Debug mode**: Full development tools and verbose logging
+- **Direct access**: No nginx proxy, direct Next.js dev server
+
+### Production Mode (`make prod`)
+- **Optimized builds**: Minified, tree-shaken, compressed assets
+- **nginx proxy**: Static file caching, gzip, security headers
+- **Minimal containers**: Multi-stage builds for smaller image sizes
+- **Performance**: Optimized for speed and resource usage
+
+## Project Structure
+
+```
+/
+├── admin/              # Strapi backend (TypeScript)
+│   ├── Dockerfile      # Multi-stage Strapi container
+│   └── package.json    # Strapi dependencies
+├── site/               # Next.js frontend (TypeScript)
+│   ├── Dockerfile      # Multi-stage Next.js container
+│   ├── next.config.ts  # Next.js configuration
+│   └── package.json    # Next.js dependencies
+├── data/               # SQLite database storage
+├── docker-compose.yml  # Container orchestration
+├── nginx.conf         # Production nginx configuration
+├── Makefile           # Development commands
+├── .env.example       # Environment template
+└── README.md          # This file
+```
+
+## Security Notes
+
+### For Production Deployment:
+1. **Generate secure keys**: Use `openssl rand -base64 32` for all secrets
+2. **Update environment**: Set production URLs and secure values
+3. **Database**: Consider PostgreSQL for high-traffic production
+4. **SSL/TLS**: Configure https with proper certificates
+5. **Firewall**: Restrict access to necessary ports only
+
+### Development Security:
+- Default keys are provided for development convenience
+- Never commit real secrets to version control
+- The `.env` file is git-ignored for security
+
+## Troubleshooting
+
+### Common Issues:
+- **Port conflicts**: Change `STRAPI_PORT` or `SITE_PORT` in `.env`
+- **Permission issues**: Ensure Docker has file system access
+- **Database locks**: Run `make clean` to reset everything
+- **Build failures**: Check Docker disk space and memory
+
+### Getting Help:
+```bash
+# Check container status
+make status
+
+# View logs for debugging
+make logs
+
+# Clean slate restart
+make clean && make setup && make dev
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test with both `make dev` and `make prod`
+5. Submit a pull request
+
+---
+
+Built with ❤️ using Docker, Make, Strapi, and Next.js
