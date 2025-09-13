@@ -4,4 +4,7 @@ export default ({ env }) => ({
       sizeLimit: 100000000, // 100MB limit
     },
   },
+  seo: {
+    enabled: true,
+  },
 });

@@ -36,15 +36,26 @@ make clean
 
 Run `make help` to see all available commands:
 
-- **`make setup`** - Initial project setup (creates .env and data directory)
-- **`make dev`** - Start development environment with hot reload
-- **`make prod`** - Start production environment with optimized builds
+### Development & Production
+- **`make setup`** - Initial project setup (creates .env and required directories)
+- **`make dev`** - Start development environment with hot reload (dependencies installed in container)
+- **`make prod`** - Start production environment with optimized builds (built in container)
 - **`make stop`** - Stop all containers (both dev and prod)
-- **`make clean`** - Remove all containers, volumes, and images
+
+### Building & Dependencies
+- **`make build`** - Build all Docker images without starting containers
+- **`make build-multiarch`** - Build multi-architecture Docker images (requires docker buildx)
+
+### Maintenance & Cleanup
+- **`make clean`** - Remove containers, volumes, images, and node_modules (preserves database and media)
+- **`make clean-all`** - Remove everything including database and media files
+- **`make restart-dev`** - Restart development environment
+- **`make restart-prod`** - Restart production environment
+
+### Monitoring & Debugging
 - **`make logs`** - Show logs from all running containers
 - **`make logs-dev`** - Show logs from development containers only
 - **`make logs-prod`** - Show logs from production containers only
-- **`make build`** - Build all Docker images without starting
 - **`make status`** - Show status of all containers
 
 ## Services
@@ -83,19 +94,22 @@ Key variables to configure:
 - **Strapi Security Keys** - Generate secure keys for production
 
 ### Data Persistence
-- **SQLite database**: Automatically stored in `./data/` directory
-- **File uploads**: Will be stored in `./uploads/` directory (auto-created)
+- **SQLite database**: Automatically stored in `./admin/data/` directory
+- **File uploads**: Stored in `./admin/public/uploads/` directory (auto-created)
 - **Volume mounts**: Development mode mounts source code for hot reload
+- **Data safety**: `make clean` preserves database and media files
 
 ## Development vs Production
 
 ### Development Mode (`make dev`)
+- **Container-based deps**: Dependencies installed inside Docker container during build
 - **Hot reload**: Source code changes trigger automatic rebuilds
 - **Volume mounts**: Code changes reflect immediately in containers
 - **Debug mode**: Full development tools and verbose logging
 - **Direct access**: No nginx proxy, direct Next.js dev server
 
 ### Production Mode (`make prod`)
+- **Container-based build**: Dependencies installed and apps built inside Docker containers
 - **Optimized builds**: Minified, tree-shaken, compressed assets
 - **nginx proxy**: Static file caching, gzip, security headers
 - **Minimal containers**: Multi-stage builds for smaller image sizes
@@ -112,7 +126,8 @@ Key variables to configure:
 │   ├── Dockerfile      # Multi-stage Next.js container
 │   ├── next.config.ts  # Next.js configuration
 │   └── package.json    # Next.js dependencies
-├── data/               # SQLite database storage
+├── admin/data/         # SQLite database storage
+├── admin/public/uploads/ # Media file uploads
 ├── docker-compose.yml  # Container orchestration
 ├── nginx.conf         # Production nginx configuration
 ├── Makefile           # Development commands
@@ -150,8 +165,11 @@ make status
 # View logs for debugging
 make logs
 
-# Clean slate restart
-make clean && make setup && make dev
+# Clean slate restart (preserves data)
+make clean && make dev
+
+# Complete reset (removes everything)
+make clean-all && make setup && make dev
 ```
 
 ## Contributing

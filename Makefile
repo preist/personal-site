@@ -34,18 +34,32 @@ stop: ## Stop all containers (both dev and prod)
 	@docker-compose --profile dev --profile prod down
 	@echo "$(GREEN)✅ All containers stopped!$(NC)"
 
-clean: ## Remove all containers, volumes, images, and node_modules
-	@echo "$(RED)⚠️  This will remove ALL containers, volumes, images, and node_modules!$(NC)"
+clean: ## Remove containers, volumes, images, and node_modules (preserves database and media)
+	@echo "$(RED)⚠️  This will remove containers, volumes, images, and node_modules!$(NC)"
+	@echo "$(YELLOW)Database and media files will be preserved.$(NC)"
 	@read -p "Are you sure? (y/N) " confirm && [ "$$confirm" = "y" ] || exit 1
-	@echo "$(CYAN)Cleaning up everything...$(NC)"
+	@echo "$(CYAN)Cleaning up containers and images...$(NC)"
 	@docker-compose --profile dev --profile prod down -v --remove-orphans
 	@docker system prune -f
 	@docker volume prune -f
 	@echo "$(CYAN)Removing node_modules directories...$(NC)"
 	@rm -rf admin/node_modules
 	@rm -rf site/node_modules
-	@rm -rf admin/.tmp admin/public/uploads
-	@echo "$(GREEN)✅ Everything cleaned!$(NC)"
+	@echo "$(GREEN)✅ Cleaned! Database and media files preserved.$(NC)"
+
+clean-all: ## Remove everything including database and media files
+	@echo "$(RED)⚠️  This will remove EVERYTHING including database and media files!$(NC)"
+	@echo "$(RED)This action cannot be undone!$(NC)"
+	@read -p "Are you sure? (y/N) " confirm && [ "$$confirm" = "y" ] || exit 1
+	@echo "$(CYAN)Cleaning up everything...$(NC)"
+	@docker-compose --profile dev --profile prod down -v --remove-orphans
+	@docker system prune -f
+	@docker volume prune -f
+	@echo "$(CYAN)Removing node_modules and data directories...$(NC)"
+	@rm -rf admin/node_modules
+	@rm -rf site/node_modules
+	@rm -rf admin/data admin/public/uploads
+	@echo "$(GREEN)✅ Everything cleaned including database and media!$(NC)"
 
 logs: ## Show logs from all running containers
 	@docker-compose logs -f
@@ -66,6 +80,7 @@ build-multiarch: ## Build multi-architecture images (requires docker buildx)
 	@docker buildx create --use --name multiarch-builder 2>/dev/null || echo "Builder already exists"
 	@DOCKER_BUILDKIT=1 docker-compose build --parallel
 	@echo "$(GREEN)✅ Multi-architecture images built!$(NC)"
+
 
 status: ## Show status of all containers
 	@echo "$(CYAN)Container Status:$(NC)"
@@ -90,7 +105,7 @@ setup: ## Initial setup - create .env from example and data directory
 	else \
 		echo "$(YELLOW)⚠️  .env file already exists$(NC)"; \
 	fi
-	@mkdir -p admin/.tmp admin/public/uploads
-	@echo "$(GREEN)✅ Created admin/.tmp directory for SQLite database$(NC)"
+	@mkdir -p admin/data admin/public/uploads
+	@echo "$(GREEN)✅ Created admin/data directory for SQLite database$(NC)"
 	@echo "$(GREEN)✅ Created admin/public/uploads directory for uploaded files$(NC)"
 	@echo "$(GREEN)✅ Setup complete! Run 'make dev' to start development.$(NC)"

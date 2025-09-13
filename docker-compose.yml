@@ -13,7 +13,7 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_CLIENT=sqlite
-      - DATABASE_FILENAME=.tmp/data.db
+      - DATABASE_FILENAME=data/data.db
       - JWT_SECRET=${JWT_SECRET:-your-jwt-secret-change-this-in-production}
       - API_TOKEN_SALT=${API_TOKEN_SALT:-your-api-token-salt-change-this}
       - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET:-your-admin-jwt-secret-change-this}
@@ -40,7 +40,7 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_CLIENT=sqlite
-      - DATABASE_FILENAME=.tmp/data.db
+      - DATABASE_FILENAME=data/data.db
       - JWT_SECRET=${JWT_SECRET}
       - API_TOKEN_SALT=${API_TOKEN_SALT}
       - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}
@@ -52,7 +52,7 @@ services:
       - "${STRAPI_PORT:-1337}:1337"
     volumes:
       - ./admin/public:/app/public:delegated
-      - ./admin/.tmp:/app/.tmp:delegated
+      - ./admin/data:/app/data:delegated
     profiles:
       - prod
 
