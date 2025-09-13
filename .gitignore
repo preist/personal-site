@@ -1,0 +1,23 @@
+.claude/
+.idea/
+
+# Environment files
+.env
+
+# Local data directories (SQLite database and uploads)
+data/
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# MacOS
+.DS_Store
