@@ -44,6 +44,7 @@ clean: ## Remove all containers, volumes, images, and node_modules
 	@echo "$(CYAN)Removing node_modules directories...$(NC)"
 	@rm -rf admin/node_modules
 	@rm -rf site/node_modules
+	@rm -rf admin/.tmp admin/public/uploads
 	@echo "$(GREEN)✅ Everything cleaned!$(NC)"
 
 logs: ## Show logs from all running containers
@@ -89,6 +90,7 @@ setup: ## Initial setup - create .env from example and data directory
 	else \
 		echo "$(YELLOW)⚠️  .env file already exists$(NC)"; \
 	fi
-	@mkdir -p data
-	@echo "$(GREEN)✅ Created data directory for SQLite database$(NC)"
+	@mkdir -p admin/.tmp admin/public/uploads
+	@echo "$(GREEN)✅ Created admin/.tmp directory for SQLite database$(NC)"
+	@echo "$(GREEN)✅ Created admin/public/uploads directory for uploaded files$(NC)"
 	@echo "$(GREEN)✅ Setup complete! Run 'make dev' to start development.$(NC)"

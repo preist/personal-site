@@ -24,6 +24,9 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# Create uploads directory and set permissions
+RUN mkdir -p public/uploads && chmod 755 public/uploads
+
 # Expose port
 EXPOSE 1337
 
@@ -57,6 +60,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/public ./public
+
+# Ensure uploads directory exists and has proper permissions
+RUN mkdir -p public/uploads && chmod 755 public/uploads
 
 # Create non-root user
 RUN addgroup --system --gid 1001 strapi
