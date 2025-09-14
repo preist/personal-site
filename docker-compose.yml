@@ -32,7 +32,7 @@ services:
     build:
       context: ./admin
       dockerfile: Dockerfile
-      target: production
+      target: development
       platforms:
         - linux/amd64
         - linux/arm64
@@ -40,18 +40,18 @@ services:
       - NODE_ENV=production
       - DATABASE_CLIENT=sqlite
       - DATABASE_FILENAME=data/data.db
-      - JWT_SECRET=${JWT_SECRET}
-      - API_TOKEN_SALT=${API_TOKEN_SALT}
-      - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}
-      - TRANSFER_TOKEN_SALT=${TRANSFER_TOKEN_SALT}
-      - APP_KEYS=${APP_KEYS}
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret-change-this-in-production}
+      - API_TOKEN_SALT=${API_TOKEN_SALT:-your-api-token-salt-change-this}
+      - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET:-your-admin-jwt-secret-change-this}
+      - TRANSFER_TOKEN_SALT=${TRANSFER_TOKEN_SALT:-your-transfer-token-salt-change-this}
+      - APP_KEYS=${APP_KEYS:-your-app-keys-change-this-in-production}
       - HOST=0.0.0.0
       - PORT=1337
     ports:
       - "${STRAPI_PORT:-1337}:1337"
     volumes:
-      - ./admin/public:/app/public:delegated
-      - ./admin/data:/app/data:delegated
+      - ./admin:/app:delegated
+      - strapi_node_modules:/app/node_modules
     profiles:
       - prod
 

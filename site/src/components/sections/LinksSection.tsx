@@ -1,7 +1,7 @@
 import { Strapi } from '@/strapi.generated';
 
 interface LinksSectionProps {
-  data: Strapi.Components['SectionsLinksSection'];
+  data: Strapi.Components.Sections.LinksSection;
 }
 
 export default function LinksSection({ data }: LinksSectionProps) {

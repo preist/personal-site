@@ -1,4 +1,5 @@
 import { Strapi } from '@/strapi.generated';
+import { Metadata } from 'next';
 
 // Use internal URL for server-side requests, public URL for client-side
 const STRAPI_URL = process.env.STRAPI_INTERNAL_URL || process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
@@ -81,7 +82,7 @@ class StrapiAPI {
 export const strapiAPI = new StrapiAPI();
 
 // Helper function to generate metadata from Strapi page
-export function generateMetadataFromPage(page: Strapi.ContentTypes.Page | null) {
+export function generateMetadataFromPage(page: Strapi.ContentTypes.Page | null): Metadata {
   if (!page || !page.seo) {
     return {
       title: page?.name || 'Page',
@@ -90,38 +91,44 @@ export function generateMetadataFromPage(page: Strapi.ContentTypes.Page | null) 
   }
 
   const { seo } = page;
-  const metadata: Record<string, unknown> = {
+
+  // Start with base metadata
+  const metadata: Metadata = {
     title: seo.metaTitle,
     description: seo.metaDescription,
   };
 
-  // Add meta image if available
-  if (seo.metaImage?.url) {
-    metadata.openGraph = {
-      images: [
-        {
-          url: `${STRAPI_URL}${seo.metaImage.url}`,
-          width: seo.metaImage.width || 1200,
-          height: seo.metaImage.height || 630,
-          alt: seo.metaImage.alternativeText || seo.metaTitle,
-        },
-      ],
+  // Add keywords as array
+  if (seo.keywords) {
+    metadata.keywords = seo.keywords.split(',').map(k => k.trim());
+  }
+
+  // Add robots directive
+  if (seo.metaRobots) {
+    metadata.robots = seo.metaRobots;
+  }
+
+  // Add canonical URL
+  if (seo.canonicalURL) {
+    metadata.alternates = {
+      canonical: seo.canonicalURL,
     };
   }
 
-  // Add Open Graph data if available
+  // Handle OpenGraph
   if (seo.openGraph) {
-    const existingOpenGraph = metadata.openGraph as Record<string, unknown> || {};
     metadata.openGraph = {
-      ...existingOpenGraph,
       title: seo.openGraph.ogTitle,
       description: seo.openGraph.ogDescription,
-      url: seo.openGraph.ogUrl,
-      type: (seo.openGraph.ogType || 'website').toLowerCase(),
+      type: (seo.openGraph.ogType || 'website').toLowerCase() as 'website' | 'article' | 'book' | 'profile',
     };
 
-    if (seo.openGraph.ogImage?.url) {
-      (metadata.openGraph as Record<string, unknown>).images = [
+    if (seo.openGraph.ogUrl && metadata.openGraph) {
+      metadata.openGraph.url = seo.openGraph.ogUrl;
+    }
+
+    if (seo.openGraph.ogImage?.url && metadata.openGraph) {
+      metadata.openGraph.images = [
         {
           url: `${STRAPI_URL}${seo.openGraph.ogImage.url}`,
           width: seo.openGraph.ogImage.width || 1200,
@@ -132,19 +139,18 @@ export function generateMetadataFromPage(page: Strapi.ContentTypes.Page | null) 
     }
   }
 
-  // Add additional SEO fields
-  if (seo.keywords) {
-    metadata.keywords = seo.keywords;
-  }
-
-  if (seo.canonicalURL) {
-    metadata.alternates = {
-      canonical: seo.canonicalURL,
+  // Add Twitter cards
+  if (seo.openGraph || seo.metaImage) {
+    metadata.twitter = {
+      card: 'summary_large_image',
+      title: seo.openGraph?.ogTitle || seo.metaTitle,
+      description: seo.openGraph?.ogDescription || seo.metaDescription,
     };
-  }
 
-  if (seo.metaRobots) {
-    metadata.robots = seo.metaRobots;
+    const imageUrl = seo.openGraph?.ogImage?.url || seo.metaImage?.url;
+    if (imageUrl) {
+      metadata.twitter.images = [`${STRAPI_URL}${imageUrl}`];
+    }
   }
 
   return metadata;

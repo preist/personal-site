@@ -14,7 +14,7 @@ export async function generatePageMetadata(slug: string): Promise<Metadata> {
 
     return slug === '/'
       ? {
-          title: 'Personal Website',
+          title: 'Igor Putina',
           description: 'Welcome to my personal website',
         }
       : {
@@ -34,7 +34,7 @@ function renderDynamicContent(content: Strapi.ContentTypes.Page['content']) {
       case 'sections.links-section':
         return <LinksSection key={index} data={component} />;
       default:
-        console.warn(`Unknown component type: ${(component as any).__component}`);
+        console.warn(`Unknown component type: ${(component as { __component: string }).__component}`);
 
         return null;
     }
@@ -57,13 +57,6 @@ function renderPageContent(page: Strapi.ContentTypes.Page, isHomePage: boolean =
             </>
           )
         )}
-
-        {page.seo && (
-          <details style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ccc' }}>
-            <summary>SEO Debug Info</summary>
-            <pre>{JSON.stringify(page.seo, null, 2)}</pre>
-          </details>
-        )}
       </main>
     </article>
   );
@@ -80,7 +73,7 @@ export default async function PageRenderer({ slug }: { slug: string }) {
         return (
           <div style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
             <h1>Welcome</h1>
-            <p>Please create a page with slug "/" in your Strapi admin panel.</p>
+            <p>Please create a page with slug &quot;/&quot; in your Strapi admin panel.</p>
             <p>
               <a href="http://localhost:1337/admin" target="_blank" rel="noopener">
                 Go to Strapi Admin →
