@@ -14,11 +14,9 @@ export async function generateStaticParams() {
     try {
       const slugs = await strapiAPI.getAllPageSlugs();
 
-      return slugs
-        .filter(slug => slug !== '/')
-        .map(slug => ({
-          slug: slug.split('/').filter(Boolean),
-        }));
+      return slugs.map(slug => ({
+        slug: slug === '/' ? [] : slug.split('/').filter(Boolean),
+      }));
     } catch (error) {
       console.warn(
         'Error generating static params, returning empty array:',
@@ -42,7 +40,7 @@ export async function generateMetadata({
 
 export default async function Page({ params }: PageProps) {
   const resolvedParams = await params;
-  const slug = resolvedParams.slug ? `/${resolvedParams.slug.join('/')}` : '/';
+  const slug = resolvedParams.slug?.length ? `/${resolvedParams.slug.join('/')}` : '/';
 
   return <PageRenderer slug={slug} />;
 }
