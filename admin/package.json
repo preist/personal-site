@@ -12,7 +12,15 @@
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
-    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "style:lint": "stylelint '**/*.{css,scss,sass}' --ignore-path .gitignore --allow-empty-input",
+    "style:fix": "stylelint '**/*.{css,scss,sass}' --fix --ignore-path .gitignore --allow-empty-input",
+    "check-all": "npm run type-check && npm run lint && npm run format:check && npm run style:lint"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "5.23.4",
@@ -29,6 +37,16 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^8.43.0",
+    "@typescript-eslint/parser": "^8.43.0",
+    "eslint": "^9.35.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-organize-imports": "^4.2.0",
+    "stylelint": "^16.24.0",
+    "stylelint-config-standard": "^39.0.0",
     "typescript": "^5"
   },
   "engines": {

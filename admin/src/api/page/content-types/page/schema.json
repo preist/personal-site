@@ -33,17 +33,11 @@
     },
     "content": {
       "type": "dynamiczone",
-      "components": [
-        "sections.text-section",
-        "sections.links-section"
-      ]
+      "components": ["sections.text-section", "sections.links-section"]
     },
     "aside": {
       "type": "dynamiczone",
-      "components": [
-        "sections.text-section",
-        "sections.links-section"
-      ]
+      "components": ["sections.text-section", "sections.links-section"]
     }
   }
 }

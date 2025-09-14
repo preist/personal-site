@@ -87,7 +87,8 @@ services:
         - linux/arm64
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_STRAPI_URL=${NEXT_PUBLIC_STRAPI_URL:-http://strapi-prod:1337}
+      - NEXT_PUBLIC_STRAPI_URL=${NEXT_PUBLIC_STRAPI_URL:-http://localhost:1337}
+      - STRAPI_INTERNAL_URL=http://strapi-prod:1337
     depends_on:
       - strapi-prod
     profiles:

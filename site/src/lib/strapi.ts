@@ -1,8 +1,12 @@
-import { Strapi } from '@/strapi.generated';
 import { Metadata } from 'next';
 
+import { Strapi } from '@/strapi.generated';
+
 // Use internal URL for server-side requests, public URL for client-side
-const STRAPI_URL = process.env.STRAPI_INTERNAL_URL || process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+const STRAPI_URL =
+  process.env.STRAPI_INTERNAL_URL ||
+  process.env.NEXT_PUBLIC_STRAPI_URL ||
+  'http://localhost:1337';
 
 export interface StrapiResponse<T> {
   data: T;
@@ -37,7 +41,9 @@ class StrapiAPI {
       });
 
       if (!response.ok) {
-        throw new Error(`Strapi API error: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Strapi API error: ${response.status} ${response.statusText}`
+        );
       }
 
       return response.json();
@@ -48,14 +54,20 @@ class StrapiAPI {
   }
 
   async getPages(): Promise<StrapiResponse<Strapi.ContentTypes.Page[]>> {
-    return this.request('/pages?populate[seo][populate]=*&populate[content][populate]=*&populate[aside][populate]=*&sort=createdAt:desc');
+    return this.request(
+      '/pages?populate[seo][populate]=*&populate[content][populate]=*&populate[aside][populate]=*&sort=createdAt:desc'
+    );
   }
 
-  async getPageBySlug(slug: string): Promise<StrapiSingleResponse<Strapi.ContentTypes.Page>> {
+  async getPageBySlug(
+    slug: string
+  ): Promise<StrapiSingleResponse<Strapi.ContentTypes.Page>> {
     // Handle root page
     const searchSlug = slug === '/' ? '/' : slug;
 
-    const response = await this.request<StrapiResponse<Strapi.ContentTypes.Page[]>>(
+    const response = await this.request<
+      StrapiResponse<Strapi.ContentTypes.Page[]>
+    >(
       `/pages?filters[slug][$eq]=${encodeURIComponent(searchSlug)}&populate[seo][populate]=*&populate[content][populate]=*&populate[aside][populate]=*`
     );
 
@@ -67,13 +79,16 @@ class StrapiAPI {
 
   async getAllPageSlugs(): Promise<string[]> {
     try {
-      const response = await this.request<StrapiResponse<Strapi.ContentTypes.Page[]>>(
-        '/pages?fields[0]=slug'
-      );
+      const response = await this.request<
+        StrapiResponse<Strapi.ContentTypes.Page[]>
+      >('/pages?fields[0]=slug');
 
       return response.data.map(page => page.slug);
     } catch (error) {
-      console.warn('Failed to fetch page slugs from Strapi, returning empty array for build:', error);
+      console.warn(
+        'Failed to fetch page slugs from Strapi, returning empty array for build:',
+        error
+      );
       return [];
     }
   }
@@ -82,7 +97,9 @@ class StrapiAPI {
 export const strapiAPI = new StrapiAPI();
 
 // Helper function to generate metadata from Strapi page
-export function generateMetadataFromPage(page: Strapi.ContentTypes.Page | null): Metadata {
+export function generateMetadataFromPage(
+  page: Strapi.ContentTypes.Page | null
+): Metadata {
   if (!page || !page.seo) {
     return {
       title: page?.name || 'Page',
@@ -120,7 +137,11 @@ export function generateMetadataFromPage(page: Strapi.ContentTypes.Page | null):
     metadata.openGraph = {
       title: seo.openGraph.ogTitle,
       description: seo.openGraph.ogDescription,
-      type: (seo.openGraph.ogType || 'website').toLowerCase() as 'website' | 'article' | 'book' | 'profile',
+      type: (seo.openGraph.ogType || 'website').toLowerCase() as
+        | 'website'
+        | 'article'
+        | 'book'
+        | 'profile',
     };
 
     if (seo.openGraph.ogUrl && metadata.openGraph) {

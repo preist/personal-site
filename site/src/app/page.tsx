@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
+
 import PageRenderer from '@/components/PageRenderer';
-import { strapiAPI, generateMetadataFromPage } from '@/lib/strapi';
+import { generateMetadataFromPage, strapiAPI } from '@/lib/strapi';
 
 export async function generateMetadata(): Promise<Metadata> {
   try {

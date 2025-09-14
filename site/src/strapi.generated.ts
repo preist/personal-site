@@ -1,6 +1,5 @@
 // This file is auto-generated. Do not edit manually.
 // Generated on: 2025-09-14T14:52:43.278Z
-/* eslint-disable @typescript-eslint/no-namespace */
 
 // Import types from @strapi/blocks-react-renderer for blocks content
 import type { BlocksContent } from '@strapi/blocks-react-renderer';

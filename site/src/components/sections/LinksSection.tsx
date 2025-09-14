@@ -8,12 +8,14 @@ export default function LinksSection({ data }: LinksSectionProps) {
   return (
     <section>
       {data.title && (
-        <h2 style={{
-          fontSize: '2rem',
-          fontWeight: 'normal',
-          color: '#666',
-          marginBottom: '2rem'
-        }}>
+        <h2
+          style={{
+            fontSize: '2rem',
+            fontWeight: 'normal',
+            color: '#666',
+            marginBottom: '2rem',
+          }}
+        >
           {data.title}
         </h2>
       )}
@@ -31,18 +33,20 @@ export default function LinksSection({ data }: LinksSectionProps) {
                   textDecoration: 'underline',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.5rem'
+                  gap: '0.5rem',
                 }}
                 target={link.url ? '_blank' : undefined}
                 rel={link.url ? 'noopener' : undefined}
               >
                 {link.text}
                 {link.url && (
-                  <span style={{
-                    fontSize: '0.875rem',
-                    color: '#999',
-                    transform: 'rotate(-45deg)'
-                  }}>
+                  <span
+                    style={{
+                      fontSize: '0.875rem',
+                      color: '#999',
+                      transform: 'rotate(-45deg)',
+                    }}
+                  >
                     ↗
                   </span>
                 )}

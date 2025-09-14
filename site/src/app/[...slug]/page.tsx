@@ -1,6 +1,7 @@
-import { strapiAPI } from '@/lib/strapi';
 import { Metadata } from 'next';
+
 import PageRenderer, { generatePageMetadata } from '@/components/PageRenderer';
+import { strapiAPI } from '@/lib/strapi';
 
 interface PageProps {
   params: Promise<{
@@ -19,8 +20,10 @@ export async function generateStaticParams() {
           slug: slug.split('/').filter(Boolean),
         }));
     } catch (error) {
-
-      console.warn('Error generating static params, returning empty array:', error);
+      console.warn(
+        'Error generating static params, returning empty array:',
+        error
+      );
       return [];
     }
   }
@@ -28,7 +31,9 @@ export async function generateStaticParams() {
   return [];
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const slug = resolvedParams.slug ? `/${resolvedParams.slug.join('/')}` : '/';
 
