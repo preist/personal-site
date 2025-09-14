@@ -1,5 +1,42 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface ElementsLink extends Struct.ComponentSchema {
+  collectionName: 'components_elements_links';
+  info: {
+    displayName: 'Link';
+    icon: 'link';
+  };
+  attributes: {
+    page: Schema.Attribute.Relation<'oneToOne', 'api::page.page'>;
+    text: Schema.Attribute.String & Schema.Attribute.Required;
+    url: Schema.Attribute.String;
+  };
+}
+
+export interface SectionsLinksSection extends Struct.ComponentSchema {
+  collectionName: 'components_sections_links_sections';
+  info: {
+    displayName: 'Links Section';
+  };
+  attributes: {
+    links: Schema.Attribute.Component<'elements.link', true> &
+      Schema.Attribute.Required;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SectionsTextSection extends Struct.ComponentSchema {
+  collectionName: 'components_sections_text_sections';
+  info: {
+    displayName: 'Text Section';
+    icon: 'quote';
+  };
+  attributes: {
+    text: Schema.Attribute.Blocks;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SharedOpenGraph extends Struct.ComponentSchema {
   collectionName: 'components_shared_open_graphs';
   info: {
@@ -54,6 +91,9 @@ export interface SharedSeo extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'elements.link': ElementsLink;
+      'sections.links-section': SectionsLinksSection;
+      'sections.text-section': SectionsTextSection;
       'shared.open-graph': SharedOpenGraph;
       'shared.seo': SharedSeo;
     }

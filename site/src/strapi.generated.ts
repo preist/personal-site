@@ -1,5 +1,5 @@
 // This file is auto-generated. Do not edit manually.
-// Generated on: 2025-09-14T09:24:45.400Z
+// Generated on: 2025-09-14T09:50:48.067Z
 
 export namespace Strapi {
   // Base Strapi media type
@@ -25,6 +25,25 @@ export namespace Strapi {
   }
 
   export namespace Components {
+    export namespace Elements {
+      export interface Link {
+        text: string;
+        url?: string;
+        page?: unknown;
+      }
+    }
+
+    export namespace Sections {
+      export interface LinksSection {
+        title?: string;
+        links: Strapi.Components.Elements.Link[];
+      }
+      export interface TextSection {
+        title?: string;
+        text?: unknown;
+      }
+    }
+
     export namespace Shared {
       export interface OpenGraph {
         ogTitle: string;

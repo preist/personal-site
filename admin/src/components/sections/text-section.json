@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_sections_text_sections",
+  "info": {
+    "displayName": "Text Section",
+    "icon": "quote"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}
