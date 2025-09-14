@@ -8,7 +8,7 @@ Designed to run in **Docker containers** with simple **Make** commands.
 - **Frontend**: Next.js 15.5.3 + TypeScript + Turbopack
 - **Backend / CMS**: Strapi 5.23.4 + TypeScript
 - **Database**: SQLite (development-friendly, production-ready)
-- **Deployment**: Dockerized with nginx optimization
+- **Deployment**: Dockerized containers
 - **Process Management**: Make + Docker Compose
 
 ## Quick Start
@@ -71,11 +71,10 @@ Run `make help` to see all available commands:
 
 ### Next.js Frontend
 - **Development Port**: 3000 (configurable via `SITE_PORT` in `.env`)
-- **Production**: Served through nginx with optimizations
+- **Production**: Optimized standalone builds
 - **URL**: http://localhost:3000
 
 ### Production Optimizations
-- **nginx**: Static file caching, gzip compression, security headers
 - **Next.js**: Standalone output for minimal container size
 - **Multi-stage builds**: Optimized Docker images for production
 
@@ -109,12 +108,12 @@ Key variables to configure:
 - **Hot reload**: Source code changes trigger automatic rebuilds
 - **Volume mounts**: Code changes reflect immediately in containers
 - **Debug mode**: Full development tools and verbose logging
-- **Direct access**: No nginx proxy, direct Next.js dev server
+- **Direct access**: Next.js dev server on port 3000
 
 ### Production Mode (`make prod`)
 - **Container-based build**: Dependencies installed and apps built inside Docker containers
 - **Optimized builds**: Minified, tree-shaken, compressed assets
-- **nginx proxy**: Static file caching, gzip, security headers
+- **Direct access**: Next.js serves directly on port 3000
 - **Minimal containers**: Multi-stage builds for smaller image sizes
 - **Performance**: Optimized for speed and resource usage
 
@@ -179,7 +178,6 @@ const seo: Strapi.Components.Shared.Seo = {
 ├── admin/data/         # SQLite database storage
 ├── admin/public/uploads/ # Media file uploads
 ├── docker-compose.yml  # Container orchestration
-├── nginx.conf         # Production nginx configuration
 ├── generate-types.js  # Type generation script
 ├── Makefile           # Development commands
 ├── .env.example       # Environment template

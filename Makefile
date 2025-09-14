@@ -22,7 +22,7 @@ dev: ## Start development environment (Strapi + Next.js with hot reload)
 	@echo "$(YELLOW)Strapi Admin:$(NC) http://localhost:1337/admin"
 	@echo "$(YELLOW)Strapi API:$(NC) http://localhost:1337/api"
 
-prod: ## Start production environment (optimized builds with nginx)
+prod: ## Start production environment (optimized builds)
 	@echo "$(CYAN)Starting production environment...$(NC)"
 	@DOCKER_BUILDKIT=1 docker-compose --profile prod up --build -d
 	@echo "$(GREEN)✅ Production environment started!$(NC)"
