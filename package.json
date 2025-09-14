@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@strapi/blocks-react-renderer": "^1.0.2"
+  }
+}

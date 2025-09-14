@@ -47,7 +47,7 @@ class StrapiAPI {
   }
 
   async getPages(): Promise<StrapiResponse<Strapi.ContentTypes.Page[]>> {
-    return this.request('/pages?populate[seo][populate]=*&sort=createdAt:desc');
+    return this.request('/pages?populate[seo][populate]=*&populate[content][populate]=*&populate[aside][populate]=*&sort=createdAt:desc');
   }
 
   async getPageBySlug(slug: string): Promise<StrapiSingleResponse<Strapi.ContentTypes.Page>> {
@@ -55,7 +55,7 @@ class StrapiAPI {
     const searchSlug = slug === '/' ? '/' : slug;
 
     const response = await this.request<StrapiResponse<Strapi.ContentTypes.Page[]>>(
-      `/pages?filters[slug][$eq]=${encodeURIComponent(searchSlug)}&populate[seo][populate]=*`
+      `/pages?filters[slug][$eq]=${encodeURIComponent(searchSlug)}&populate[seo][populate]=*&populate[content][populate]=*&populate[aside][populate]=*`
     );
 
     return {

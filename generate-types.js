@@ -16,6 +16,9 @@ function strapiToTSType(fieldType, field) {
     case 'password':
     case 'uid':
       return 'string';
+    case 'blocks':
+      // Strapi blocks content - returns structured block data for @strapi/blocks-react-renderer
+      return 'BlocksContent';
     case 'integer':
     case 'biginteger':
     case 'decimal':
@@ -28,13 +31,30 @@ function strapiToTSType(fieldType, field) {
     case 'time':
       return 'string'; // Usually ISO string from Strapi API
     case 'json':
-      return 'unknown';
+      // JSON fields could be more specific, but safer as unknown for now
+      return 'Record<string, unknown> | null';
     case 'enumeration':
       return field.enum ? `'${field.enum.join("' | '")}'` : 'string';
     case 'media':
       return field.multiple ? 'StrapiMedia[]' : 'StrapiMedia | null';
     case 'relation':
-      return 'unknown'; // Relations are complex, keep as unknown for now
+      // For relations, we could be more specific based on the target
+      if (field.target) {
+        // Extract content type name from target like "api::page.page"
+        const targetParts = field.target.split('::');
+        if (targetParts.length === 2) {
+          const contentTypeName = targetParts[1].split('.')[0];
+          const typeName = capitalize(toPascalCase(contentTypeName));
+
+          // Handle different relation types
+          if (field.relation === 'oneToOne' || field.relation === 'manyToOne') {
+            return `Strapi.ContentTypes.${typeName} | null`;
+          } else if (field.relation === 'oneToMany' || field.relation === 'manyToMany') {
+            return `Strapi.ContentTypes.${typeName}[]`;
+          }
+        }
+      }
+      return 'unknown';
     case 'component':
       if (field.component) {
         const componentName = field.component.replace('.', '');
@@ -46,6 +66,14 @@ function strapiToTSType(fieldType, field) {
       }
       return 'unknown';
     case 'dynamiczone':
+      if (field.components && field.components.length > 0) {
+        const componentTypes = field.components.map(component => {
+          const namespace = component.split('.')[0];
+          const componentName = component.split('.')[1];
+          return `Strapi.Components.${capitalize(namespace)}.${capitalize(toPascalCase(componentName))}`;
+        });
+        return `(${componentTypes.join(' | ')})[]`;
+      }
       return 'unknown[]';
     default:
       return 'unknown';
@@ -94,10 +122,15 @@ function generateComponentInterfaces() {
         })
         .join('\n');
 
+      // Add __component discriminator property
+      const componentId = `${namespace}.${componentName}`;
+      const componentProperty = `    __component: '${componentId}';`;
+      const allAttributes = [componentProperty, attributes].filter(Boolean).join('\n');
+
       interfaces.push({
         namespace: capitalize(namespace),
         name: capitalize(toPascalCase(componentName)),
-        definition: `  export interface ${capitalize(toPascalCase(componentName))} {\n${attributes}\n  }`
+        definition: `  export interface ${capitalize(toPascalCase(componentName))} {\n${allAttributes}\n  }`
       });
     });
   });
@@ -161,6 +194,9 @@ function generateTypeScript() {
   let output = `// This file is auto-generated. Do not edit manually.
 // Generated on: ${new Date().toISOString()}
 /* eslint-disable @typescript-eslint/no-namespace */
+
+// Import types from @strapi/blocks-react-renderer for blocks content
+import type { BlocksContent } from '@strapi/blocks-react-renderer';
 
 export namespace Strapi {
   // Base Strapi media type
