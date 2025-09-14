@@ -1,95 +1,73 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { strapiAPI, generateMetadataFromPage } from '@/lib/strapi';
+import { Strapi } from '@/strapi.generated';
+import { Metadata } from 'next';
 
-export default function Home() {
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const { data: page } = await strapiAPI.getPageBySlug('/');
+    return generateMetadataFromPage(page);
+  } catch (error) {
+    console.error('Error generating metadata for home page:', error);
+    return {
+      title: 'Personal Website',
+      description: 'Welcome to my personal website',
+    };
+  }
+}
+
+function renderPageContent(page: Strapi.ContentTypes.Page) {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <article style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
+      <header>
+        <h1>{page.name}</h1>
+      </header>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
+      <main>
+        <p>This is the content for: <strong>{page.name}</strong></p>
+        <p>Slug: <code>{page.slug}</code></p>
+
+        {page.seo && (
+          <details style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ccc' }}>
+            <summary>SEO Debug Info</summary>
+            <pre>{JSON.stringify(page.seo, null, 2)}</pre>
+          </details>
+        )}
       </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    </article>
   );
+}
+
+export default async function HomePage() {
+  try {
+    const { data: page } = await strapiAPI.getPageBySlug('/');
+
+    if (!page) {
+      // Fallback content if no root page exists in Strapi
+      return (
+        <div style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
+          <h1>Welcome</h1>
+          <p>Please create a page with slug &quot;/&quot; in your Strapi admin panel.</p>
+          <p>
+            <a href="http://localhost:1337/admin" target="_blank" rel="noopener">
+              Go to Strapi Admin →
+            </a>
+          </p>
+        </div>
+      );
+    }
+
+    return renderPageContent(page);
+  } catch (error) {
+    console.error('Error fetching home page:', error);
+
+    return (
+      <div style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
+        <h1>Connection Error</h1>
+        <p>Unable to connect to Strapi. Please make sure the admin service is running.</p>
+        <p>
+          <code>make dev</code> to start the development environment.
+        </p>
+      </div>
+    );
+  }
 }

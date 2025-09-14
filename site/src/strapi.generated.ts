@@ -1,5 +1,6 @@
 // This file is auto-generated. Do not edit manually.
-// Generated on: 2025-09-14T09:50:48.067Z
+// Generated on: 2025-09-14T11:47:18.775Z
+/* eslint-disable @typescript-eslint/no-namespace */
 
 export namespace Strapi {
   // Base Strapi media type

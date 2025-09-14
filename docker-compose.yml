@@ -1,5 +1,4 @@
 # Base docker-compose configuration
-version: '3.8'
 
 services:
   strapi-dev:
@@ -67,6 +66,7 @@ services:
     environment:
       - NODE_ENV=development
       - NEXT_PUBLIC_STRAPI_URL=${NEXT_PUBLIC_STRAPI_URL:-http://localhost:1337}
+      - STRAPI_INTERNAL_URL=http://strapi-dev:1337
     ports:
       - "${SITE_PORT:-3000}:3000"
     volumes:

@@ -160,6 +160,7 @@ function generateTypeScript() {
 
   let output = `// This file is auto-generated. Do not edit manually.
 // Generated on: ${new Date().toISOString()}
+/* eslint-disable @typescript-eslint/no-namespace */
 
 export namespace Strapi {
   // Base Strapi media type
