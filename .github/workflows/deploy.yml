@@ -1,0 +1,72 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  deploy:
+    name: Deploy to DigitalOcean Droplet
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          port: ${{ secrets.DROPLET_PORT || 22 }}
+          script: |
+            cd /home/igor/personal-site
+
+            # Ensure we're on the correct branch and pull latest changes
+            git fetch origin main
+            git checkout main
+            git pull origin main
+
+            # Run the deployment script
+            chmod +x deploy.sh
+            ./deploy.sh
+          timeout: 600s # 10 minutes timeout
+
+      - name: Health check
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          port: ${{ secrets.DROPLET_PORT || 22 }}
+          script: |
+            cd /home/igor/personal-site
+
+            # Wait a bit for services to fully start
+            sleep 10
+
+            # Check if containers are running
+            if docker-compose --profile prod ps | grep -q "Up"; then
+              echo "✅ Deployment successful - services are running"
+              make status
+            else
+              echo "❌ Deployment failed - services not running"
+              make logs
+              exit 1
+            fi
+          timeout: 120s
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "🎉 Deployment to igorputina.com completed successfully!"
+          echo "Frontend: http://www.igorputina.com"
+          echo "Admin: http://admin.igorputina.com"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed. Check the logs above for details."
+          echo "You may need to SSH into the server to debug further."
