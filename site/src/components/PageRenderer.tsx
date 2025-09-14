@@ -11,7 +11,7 @@ export async function generatePageMetadata(slug: string): Promise<Metadata> {
     const { data: page } = await strapiAPI.getPageBySlug(slug);
     return generateMetadataFromPage(page);
   } catch (error) {
-    console.erroAr('Error generating metadata:', error);
+    console.error('Error generating metadata:', error);
 
     return {
       title: 'Page Not Found',
