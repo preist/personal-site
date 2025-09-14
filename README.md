@@ -58,6 +58,9 @@ Run `make help` to see all available commands:
 - **`make logs-prod`** - Show logs from production containers only
 - **`make status`** - Show status of all containers
 
+### Type Generation
+- **`make types`** - Generate TypeScript interfaces from Strapi schemas for Next.js
+
 ## Services
 
 ### Strapi Backend (CMS)
@@ -115,14 +118,61 @@ Key variables to configure:
 - **Minimal containers**: Multi-stage builds for smaller image sizes
 - **Performance**: Optimized for speed and resource usage
 
+## TypeScript Type Generation
+
+This project includes automatic TypeScript type generation from Strapi schemas to ensure type safety between the CMS and frontend.
+
+### Usage
+
+```bash
+# Generate TypeScript types from Strapi content types and components
+make types
+```
+
+This command:
+1. **Scans** Strapi content types (`admin/src/api/`) and components (`admin/src/components/`)
+2. **Generates** clean TypeScript interfaces with proper namespacing
+3. **Formats** the output using Prettier for consistent code style
+4. **Outputs** to `site/src/strapi.generated.ts`
+
+### Generated Structure
+
+```typescript
+// Example usage in your Next.js components
+import { Strapi } from './strapi.generated';
+
+// Content Types
+const page: Strapi.ContentTypes.Page = {
+  id: 1,
+  name: "Home",
+  slug: "/",
+  seo: { metaTitle: "Home Page", metaDescription: "..." }
+};
+
+// Components
+const seo: Strapi.Components.Shared.Seo = {
+  metaTitle: "Page Title",
+  metaDescription: "Page description"
+};
+```
+
+### When to Run
+
+- After creating or modifying Strapi content types
+- After adding or changing component schemas
+- Before deploying to ensure type consistency
+
 ## Project Structure
 
 ```
 /
 ├── admin/              # Strapi backend (TypeScript)
+│   ├── src/api/        # Content type schemas
+│   ├── src/components/ # Component schemas
 │   ├── Dockerfile      # Multi-stage Strapi container
 │   └── package.json    # Strapi dependencies
 ├── site/               # Next.js frontend (TypeScript)
+│   ├── src/strapi.generated.ts # Auto-generated Strapi types
 │   ├── Dockerfile      # Multi-stage Next.js container
 │   ├── next.config.ts  # Next.js configuration
 │   └── package.json    # Next.js dependencies
@@ -130,6 +180,7 @@ Key variables to configure:
 ├── admin/public/uploads/ # Media file uploads
 ├── docker-compose.yml  # Container orchestration
 ├── nginx.conf         # Production nginx configuration
+├── generate-types.js  # Type generation script
 ├── Makefile           # Development commands
 ├── .env.example       # Environment template
 └── README.md          # This file

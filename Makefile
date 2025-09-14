@@ -96,6 +96,13 @@ restart-prod: ## Restart production environment
 	@docker-compose --profile prod restart
 	@echo "$(GREEN)✅ Production environment restarted!$(NC)"
 
+types: ## Generate TypeScript types from Strapi schemas for Next.js
+	@echo "$(CYAN)Generating Strapi TypeScript types...$(NC)"
+	@node generate-types.js
+	@echo "$(CYAN)Formatting generated types...$(NC)"
+	@cd site && npx prettier --write src/strapi.generated.ts
+	@echo "$(GREEN)✅ Types generated and formatted at site/src/strapi.generated.ts$(NC)"
+
 setup: ## Initial setup - create .env from example and data directory
 	@echo "$(CYAN)Setting up project...$(NC)"
 	@if [ ! -f .env ]; then \
