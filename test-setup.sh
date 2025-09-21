@@ -51,7 +51,7 @@ fi
 
 # Test 3: Check Docker Compose configuration
 echo -e "\n🐳 Testing Docker Compose configuration..."
-if docker-compose config > /dev/null; then
+if docker compose config > /dev/null; then
     success "Docker Compose configuration is valid"
 else
     error "Docker Compose configuration has errors"
@@ -105,7 +105,7 @@ else
     exit 1
 fi
 
-if command -v docker-compose &> /dev/null; then
+if command -v docker &> /dev/null && docker compose version &> /dev/null; then
     success "Docker Compose is available"
 else
     error "Docker Compose is not available"

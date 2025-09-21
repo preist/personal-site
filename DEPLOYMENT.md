@@ -77,7 +77,7 @@ curl -I http://www.igorputina.com
 curl -I http://admin.igorputina.com
 
 # Check container status
-docker-compose --profile prod ps
+docker compose --profile prod ps
 ```
 
 ## SSL Setup (Future)
@@ -111,27 +111,18 @@ When you're ready to add SSL certificates:
 3. **Permission issues:**
    ```bash
    sudo chown -R igor:igor /home/igor/personal-site
-   chmod +x deploy.sh webhook-deploy.sh webhook-server.js
-   ```
-
-4. **Webhook server issues:**
-   ```bash
-   sudo systemctl status webhook-server
-   sudo journalctl -u webhook-server -f
+   chmod +x test-setup.sh
    ```
 
 ### Log Locations
 - Container logs: `make logs`
-- Webhook server: `/var/log/webhook-server.log`
-- Deployment logs: `/var/log/webhook-deploy.log`
 
 ## Security Notes
 
 1. **Change default secrets** in `.env` for production
-2. **Update webhook secret** in service file
-3. **Configure firewall** to allow only necessary ports
-4. **Regular updates**: Keep Docker images and system packages updated
-5. **Backup data**: The SQLite database is in `admin/data/`
+2. **Configure firewall** to allow only necessary ports
+3. **Regular updates**: Keep Docker images and system packages updated
+4. **Backup data**: The SQLite database is in `admin/data/`
 
 ## Monitoring
 
@@ -144,7 +135,7 @@ curl -s -o /dev/null -w "%{http_code}" http://www.igorputina.com
 curl -s -o /dev/null -w "%{http_code}" http://admin.igorputina.com
 
 # Container health
-docker-compose --profile prod ps --format "table {{.Name}}\t{{.Status}}"
+docker compose --profile prod ps --format "table {{.Name}}\t{{.Status}}"
 ```
 
 ### Resource Monitoring
