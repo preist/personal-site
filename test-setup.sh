@@ -27,7 +27,7 @@ warning() {
 
 # Test 1: Check required files exist
 echo "📁 Checking required files..."
-files=(".env" "docker-compose.yml" "nginx.conf" "deploy.sh" "webhook-server.js")
+files=(".env" "docker-compose.yml")
 for file in "${files[@]}"; do
     if [ -f "$file" ]; then
         success "Found $file"
@@ -39,27 +39,17 @@ done
 
 # Test 2: Check permissions
 echo -e "\n🔐 Checking permissions..."
-scripts=("deploy.sh" "webhook-deploy.sh" "webhook-server.js")
-for script in "${scripts[@]}"; do
-    if [ -x "$script" ]; then
-        success "$script is executable"
+if [ -f "test-setup.sh" ]; then
+    if [ -x "test-setup.sh" ]; then
+        success "test-setup.sh is executable"
     else
-        error "$script is not executable"
-        chmod +x "$script"
-        success "Fixed permissions for $script"
+        warning "test-setup.sh is not executable"
+        chmod +x "test-setup.sh"
+        success "Fixed permissions for test-setup.sh"
     fi
-done
-
-# Test 3: Verify nginx configuration
-echo -e "\n🌐 Testing nginx configuration..."
-if docker run --rm -v "$(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro" nginx:alpine nginx -t; then
-    success "Nginx configuration is valid"
-else
-    error "Nginx configuration has errors"
-    exit 1
 fi
 
-# Test 4: Check Docker Compose configuration
+# Test 3: Check Docker Compose configuration
 echo -e "\n🐳 Testing Docker Compose configuration..."
 if docker-compose config > /dev/null; then
     success "Docker Compose configuration is valid"
@@ -68,35 +58,29 @@ else
     exit 1
 fi
 
-# Test 5: Check environment variables
+# Test 4: Check environment variables
 echo -e "\n🔧 Checking environment configuration..."
-if grep -q "admin.igorputina.com" .env; then
-    success "Production domains configured in .env"
+if [ -f ".env" ] && grep -q "NEXT_PUBLIC_STRAPI_URL" .env; then
+    success "Strapi URL configured in .env"
 else
-    warning "Production domains not found in .env - check NEXT_PUBLIC_STRAPI_URL"
+    warning "NEXT_PUBLIC_STRAPI_URL not found in .env - check configuration"
 fi
 
-# Test 6: Check if ports are available
+# Test 5: Check if ports are available
 echo -e "\n🚪 Checking port availability..."
-if ! netstat -tuln | grep -q ":80 "; then
-    success "Port 80 is available"
+if ! netstat -tuln 2>/dev/null | grep -q ":3000 "; then
+    success "Port 3000 is available for Next.js"
 else
-    warning "Port 80 is in use - make sure to stop other services"
+    warning "Port 3000 is in use"
 fi
 
-if ! netstat -tuln | grep -q ":443 "; then
-    success "Port 443 is available"
+if ! netstat -tuln 2>/dev/null | grep -q ":1337 "; then
+    success "Port 1337 is available for Strapi"
 else
-    warning "Port 443 is in use"
+    warning "Port 1337 is in use"
 fi
 
-if ! netstat -tuln | grep -q ":3001 "; then
-    success "Port 3001 is available for webhook server"
-else
-    warning "Port 3001 is in use"
-fi
-
-# Test 7: Check Git repository status
+# Test 6: Check Git repository status
 echo -e "\n📚 Checking Git repository..."
 if git status > /dev/null 2>&1; then
     success "Git repository is initialized"
@@ -110,7 +94,7 @@ else
     error "Not a Git repository or Git not available"
 fi
 
-# Test 8: Check Node.js availability
+# Test 7: Check Node.js availability
 echo -e "\n🟢 Checking Node.js..."
 if command -v node &> /dev/null; then
     success "Node.js is available ($(node --version))"
@@ -118,7 +102,7 @@ else
     warning "Node.js not found - webhook server won't work"
 fi
 
-# Test 9: Check Docker availability
+# Test 8: Check Docker availability
 echo -e "\n🐋 Checking Docker..."
 if command -v docker &> /dev/null && docker info > /dev/null 2>&1; then
     success "Docker is available and running"
@@ -136,10 +120,10 @@ fi
 
 echo -e "\n🎉 Setup test completed successfully!"
 echo -e "\n📋 Next steps:"
-echo "1. Update DNS records to point to this server"
-echo "2. Generate secure keys for .env file"
-echo "3. Set up GitHub repository secrets for automated deployment"
-echo "4. Test deployment with: ./deploy.sh"
-echo "5. Configure SSL certificates when ready"
+echo "1. Generate secure keys for .env file"
+echo "2. Set up GitHub repository secrets if using automated deployment"
+echo "3. Test development environment with: make dev"
+echo "4. Test production environment with: make prod"
+echo "5. Configure external nginx proxy if needed"
 
-echo -e "\n📖 See DEPLOYMENT.md for detailed instructions"
+echo -e "\n📖 Run 'make help' for available commands"
