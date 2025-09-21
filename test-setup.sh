@@ -84,14 +84,8 @@ fi
 echo -e "\n📚 Checking Git repository..."
 if git status > /dev/null 2>&1; then
     success "Git repository is initialized"
-
-    if git remote -v | grep -q "origin"; then
-        success "Git remote 'origin' is configured"
-    else
-        warning "Git remote 'origin' not configured - needed for GitHub Actions"
-    fi
 else
-    error "Not a Git repository or Git not available"
+    warning "Not a Git repository or Git not available"
 fi
 
 # Test 7: Check Node.js availability
@@ -121,9 +115,8 @@ fi
 echo -e "\n🎉 Setup test completed successfully!"
 echo -e "\n📋 Next steps:"
 echo "1. Generate secure keys for .env file"
-echo "2. Set up GitHub repository secrets if using automated deployment"
-echo "3. Test development environment with: make dev"
-echo "4. Test production environment with: make prod"
-echo "5. Configure external nginx proxy if needed"
+echo "2. Test development environment with: make dev"
+echo "3. Test production environment with: make prod"
+echo "4. Configure external nginx proxy if needed"
 
 echo -e "\n📖 Run 'make help' for available commands"

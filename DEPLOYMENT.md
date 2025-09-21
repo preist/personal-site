@@ -1,6 +1,6 @@
 # Production Deployment Guide
 
-This guide covers deploying your personal website to production with domain routing and automated deployment from GitHub.
+This guide covers deploying your personal website to production with domain routing.
 
 ## Domain Configuration
 
@@ -35,64 +35,23 @@ vim .env
 mkdir -p /home/igor/personal-site/ssl
 ```
 
-## Deployment Options
+## Manual Deployment
 
-### Option 1: GitHub Actions (Recommended)
+### Direct Deployment
 
-1. **Set up GitHub Secrets** in your repository settings:
-   ```
-   DROPLET_HOST=YOUR_DROPLET_IP
-   DROPLET_USER=igor
-   DROPLET_SSH_KEY=YOUR_PRIVATE_SSH_KEY
-   DROPLET_PORT=22 (optional, defaults to 22)
-   ```
-
-2. **Push to main branch** - deployment happens automatically
-
-3. **Manual deployment** - Use "Run workflow" in GitHub Actions tab
-
-### Option 2: Webhook Server
-
-1. **Install and start the webhook server:**
+1. **Clone or pull the repository:**
    ```bash
-   # Copy service file
-   sudo cp webhook-server.service /etc/systemd/system/
-
-   # Create log directory
-   sudo mkdir -p /var/log
-   sudo touch /var/log/webhook-server.log
-   sudo chown igor:igor /var/log/webhook-server.log
-
-   # Start service
-   sudo systemctl daemon-reload
-   sudo systemctl enable webhook-server
-   sudo systemctl start webhook-server
+   git pull origin main
    ```
 
-2. **Configure GitHub webhook:**
-   - Go to your GitHub repo → Settings → Webhooks
-   - Add webhook: `http://YOUR_DROPLET_IP:3001/deploy`
-   - Content type: `application/json`
-   - Secret: Set a secure secret and update it in the service file
-   - Events: Just push events
-
-3. **Test webhook:**
+2. **Deploy using Make:**
    ```bash
-   # Manual trigger
-   curl -X POST http://localhost:3001/deploy
+   # For production deployment
+   make prod
 
-   # Check status
-   curl http://localhost:3001/health
-
-   # View logs
-   tail -f /var/log/webhook-server.log
+   # Or for development
+   make dev
    ```
-
-### Option 3: Manual Deployment
-```bash
-cd /home/igor/personal-site
-./deploy.sh
-```
 
 ## Production Commands
 
