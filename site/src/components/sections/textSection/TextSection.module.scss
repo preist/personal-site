@@ -1,0 +1,16 @@
+.section {
+
+}
+
+.title {
+  font-size: var(--xl);
+  font-weight: var(--fw-normal);
+  color: var(--muted);
+  margin-bottom: var(--xl);
+}
+
+.text {
+  font-size: var(--fs-lg);
+  line-height: var(--lh-normal);
+  color: var(--fg);
+}

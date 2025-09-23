@@ -1,52 +1,34 @@
 import { Strapi } from '@/strapi.generated';
 
+import styles from './LinksSection.module.scss';
+
 interface LinksSectionProps {
   data: Strapi.Components.Sections.LinksSection;
 }
 
 export default function LinksSection({ data }: LinksSectionProps) {
   return (
-    <section>
+    <section className={styles.section}>
       {data.title && (
-        <h2
-          style={{
-            fontSize: '2rem',
-            fontWeight: 'normal',
-            color: '#666',
-            marginBottom: '2rem',
-          }}
-        >
+        <h2 className={styles.title}>
           {data.title}
         </h2>
       )}
       {data.links && data.links.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className={styles.links}>
           {data.links.map((link, index) => {
             const href = link.url || (link.page ? `${link.page.slug}` : '#');
             return (
               <a
                 key={index}
                 href={href}
-                style={{
-                  fontSize: '1.125rem',
-                  color: '#333',
-                  textDecoration: 'underline',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                }}
+                className={styles.link}
                 target={link.url ? '_blank' : undefined}
                 rel={link.url ? 'noopener' : undefined}
               >
                 {link.text}
                 {link.url && (
-                  <span
-                    style={{
-                      fontSize: '0.875rem',
-                      color: '#999',
-                      transform: 'rotate(-45deg)',
-                    }}
-                  >
+                  <span className={styles.icon}>
                     ↗
                   </span>
                 )}

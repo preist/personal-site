@@ -1,0 +1,90 @@
+@import '../styles/reset';
+@import '../styles/typography';
+@import '../styles/components';
+@import '../styles/grid';
+@import '../styles/utilities';
+
+:root {
+  --black: #000000;
+  --white: #ffffff;
+  --gray: #666666;
+
+  --bg: var(--white);
+  --fg: var(--black);
+  --muted: var(--gray);
+
+  --xs: 0.25rem;
+  --sm: 0.5rem;
+  --md: 1rem;
+  --lg: 1.5rem;
+  --xl: 2rem;
+  --xxl: 3rem;
+
+  --font: var(--font-ibm-plex-sans), 'IBM Plex Sans', Helvetica, sans-serif;
+  --font-mono: var(--font-fira-code), 'Fira Code', 'Courier New', monospace;
+  --fs: 1rem;
+  --fs-sm: 0.875rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.25rem;
+  --fs-xxl: 1.5rem;
+
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+
+  --lh: 1.5;
+  --lh-tight: 1.25;
+
+  --cols: 12;
+  --gap: var(--md);
+  --gap-sm: var(--sm);
+  --gap-lg: var(--lg);
+
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+
+  --radius: 0.25rem;
+  --trans: 150ms ease-in-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--black);
+    --fg: var(--white);
+    --muted: var(--gray);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--fg);
+  background-color: var(--bg);
+  font-family: var(--font);
+  font-size: var(--fs);
+  line-height: var(--lh);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--md);
+}
+
+:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+::selection {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+

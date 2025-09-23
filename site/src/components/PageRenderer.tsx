@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import LinksSection from '@/components/sections/LinksSection';
-import TextSection from '@/components/sections/TextSection';
+import LinksSection from '@/components/sections/linksSection/LinksSection';
+import TextSection from '@/components/sections/textSection/TextSection';
 import { generateMetadataFromPage, strapiAPI } from '@/lib/strapi';
 import { Strapi } from '@/strapi.generated';
 
