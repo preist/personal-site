@@ -1,0 +1,30 @@
+.section {
+
+}
+
+.title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--fg);
+  margin-bottom: var(--lg);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: var(--md);
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.caption {
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  text-align: center;
+  margin: 0;
+}

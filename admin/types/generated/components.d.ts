@@ -13,6 +13,19 @@ export interface ElementsLink extends Struct.ComponentSchema {
   };
 }
 
+export interface SectionsImageSection extends Struct.ComponentSchema {
+  collectionName: 'components_sections_image_sections';
+  info: {
+    description: 'A section for displaying responsive images';
+    displayName: 'Image Section';
+  };
+  attributes: {
+    caption: Schema.Attribute.Text;
+    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface SectionsLinksSection extends Struct.ComponentSchema {
   collectionName: 'components_sections_links_sections';
   info: {
@@ -92,6 +105,7 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'elements.link': ElementsLink;
+      'sections.image-section': SectionsImageSection;
       'sections.links-section': SectionsLinksSection;
       'sections.text-section': SectionsTextSection;
       'shared.open-graph': SharedOpenGraph;

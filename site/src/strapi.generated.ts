@@ -1,5 +1,6 @@
 // This file is auto-generated. Do not edit manually.
-// Generated on: 2025-09-14T14:52:43.278Z
+// Generated on: 2025-09-23T19:07:41.370Z
+/* eslint-disable @typescript-eslint/no-namespace */
 
 // Import types from @strapi/blocks-react-renderer for blocks content
 import type { BlocksContent } from '@strapi/blocks-react-renderer';
@@ -38,6 +39,12 @@ export namespace Strapi {
     }
 
     export namespace Sections {
+      export interface ImageSection {
+        __component: 'sections.image-section';
+        title?: string;
+        image: StrapiMedia | null;
+        caption?: string;
+      }
       export interface LinksSection {
         __component: 'sections.links-section';
         title?: string;
@@ -88,10 +95,12 @@ export namespace Strapi {
       content?: (
         | Strapi.Components.Sections.TextSection
         | Strapi.Components.Sections.LinksSection
+        | Strapi.Components.Sections.ImageSection
       )[];
       aside?: (
         | Strapi.Components.Sections.TextSection
         | Strapi.Components.Sections.LinksSection
+        | Strapi.Components.Sections.ImageSection
       )[];
     }
   }

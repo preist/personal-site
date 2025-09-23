@@ -390,10 +390,18 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
   };
   attributes: {
     aside: Schema.Attribute.DynamicZone<
-      ['sections.text-section', 'sections.links-section']
+      [
+        'sections.text-section',
+        'sections.links-section',
+        'sections.image-section',
+      ]
     >;
     content: Schema.Attribute.DynamicZone<
-      ['sections.text-section', 'sections.links-section']
+      [
+        'sections.text-section',
+        'sections.links-section',
+        'sections.image-section',
+      ]
     >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
