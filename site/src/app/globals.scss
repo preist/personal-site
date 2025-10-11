@@ -1,8 +1,8 @@
-@import '../styles/reset';
-@import '../styles/typography';
-@import '../styles/components';
-@import '../styles/grid';
-@import '../styles/utilities';
+@use '../styles/reset';
+@use '../styles/typography';
+@use '../styles/components';
+@use '../styles/grid';
+@use '../styles/utilities';
 
 :root {
   --black: #000000;

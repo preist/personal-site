@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 
 import { Strapi } from '@/strapi.generated';
 
-// Use internal URL for server-side requests, public URL for client-side
 const STRAPI_URL =
   process.env.STRAPI_INTERNAL_URL ||
   process.env.NEXT_PUBLIC_STRAPI_URL ||
